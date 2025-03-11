@@ -6,6 +6,7 @@ import React, {useCallback, useContext, useEffect, useMemo, useRef, useState} fr
 
 import {isToday, generateDay} from '../dateutils';
 import InfiniteList from '../infinite-list';
+import type {InfiniteListProps} from '../infinite-list';
 import Context from '../expandableCalendar/Context';
 import {UpdateSources} from '../expandableCalendar/commons';
 import Timeline, {TimelineProps} from '../timeline/Timeline';
@@ -46,13 +47,17 @@ export interface TimelineListProps {
    */
   scrollToNow?: boolean;
   /**
+   * General Infinite List props to pass to Infinite List
+   */
+  infiniteListProps?: Pick<InfiniteListProps, 'pageHeight'>;
+  /**
    * Should initially scroll to a specific time (relevant only for NOT "today" timelines)
    */
   initialTime?: TimelineProps['initialTime'];
 }
 
 const TimelineList = (props: TimelineListProps) => {
-  const {timelineProps, events, renderItem, showNowIndicator, scrollToFirst, scrollToNow, initialTime} = props;
+  const {timelineProps, infiniteListProps, events, renderItem, showNowIndicator, scrollToFirst, scrollToNow, initialTime} = props;
   const shouldFixRTL = constants.isRTL && (constants.isRN73() || constants.isAndroid); // isHorizontal = true
   const {date, updateSource, setDate, numberOfDays = 1, timelineLeftInset} = useContext(Context);
   const listRef = useRef<any>();
@@ -124,6 +129,7 @@ const TimelineList = (props: TimelineListProps) => {
       const _timelineProps = {
         ...timelineProps,
         key: item,
+        isCurrent,
         date: dropRight(weekDates, numberOfDaysToDrop),
         events: flatten(dropRight(weekEvents, numberOfDaysToDrop)),
         scrollToNow: _isToday && isInitialPage && scrollToNow,
@@ -153,6 +159,7 @@ const TimelineList = (props: TimelineListProps) => {
 
   return (
     <InfiniteList
+      {...infiniteListProps}
       isHorizontal
       ref={listRef}
       data={pages}

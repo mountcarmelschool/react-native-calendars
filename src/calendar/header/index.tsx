@@ -43,7 +43,7 @@ export interface CalendarHeaderProps {
   /** Hide month navigation arrows */
   hideArrows?: boolean;
   /** Replace default arrows with custom ones (direction = 'left' | 'right') */
-  renderArrow?: (direction: Direction) => ReactNode;
+  renderArrow?: (direction: Direction, options?: { disable?: boolean; }) => ReactNode;
   /** Handler which gets executed when press arrow icon left. It receive a callback can go back month */
   onPressArrowLeft?: (method: () => void, month?: XDate) => void; //TODO: replace with string
   /** Handler which gets executed when press arrow icon right. It receive a callback can go next month */
@@ -246,7 +246,7 @@ const CalendarHeader = forwardRef((props: CalendarHeaderProps, ref) => {
         testID={`${testID}.${arrowId}`}
       >
         {renderArrow ? (
-          renderArrow(renderArrowDirection)
+          renderArrow(renderArrowDirection, {disable: shouldDisable})
         ) : (
           <Image source={imageSource} style={shouldDisable ? style.current.disabledArrowImage : style.current.arrowImage}/>
         )}

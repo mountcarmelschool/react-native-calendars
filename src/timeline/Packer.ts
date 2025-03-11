@@ -23,7 +23,7 @@ interface UnavailableHoursOptions {
   dayEnd: number;
 }
 
-export const HOUR_BLOCK_HEIGHT = 100;
+export const HOUR_BLOCK_HEIGHT = 50;
 const OVERLAP_EVENTS_SPACINGS = 10;
 const RIGHT_EDGE_SPACING = 10;
 
@@ -40,7 +40,7 @@ function buildEvent(
 
   return {
     ...event,
-    top: (dayStartTime.diffHours(startTime) - dayStart) * hourBlockHeight,
+    top: ((dayStartTime.diffHours(startTime) - dayStart) * hourBlockHeight) + 24,
     height: startTime.diffHours(endTime) * hourBlockHeight,
     width,
     left
@@ -169,7 +169,7 @@ export function buildUnavailableHoursBlocks(
         const endFixed = Math.min(hours.end, dayEnd);
 
         return {
-          top: ((startFixed - dayStart) / totalDayHours) * totalDayHeight,
+          top: (((startFixed - dayStart) / totalDayHours) * totalDayHeight) + 24,
           height: (endFixed - startFixed) * hourBlockHeight
         };
       })

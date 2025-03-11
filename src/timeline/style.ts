@@ -3,9 +3,9 @@ import * as defaultStyle from '../style';
 import {Theme} from '../types';
 import constants from '../commons/constants';
 
-const LINE_COLOR = '#D8D8D8';
-const TIME_LABEL_COLOR = '#AAAAAA';
-const EVENT_TEXT_COLOR = '#615B73';
+const LINE_COLOR = '#C7C7C7';
+const TIME_LABEL_COLOR = '#595959';
+const EVENT_TEXT_COLOR = '#595959';
 const NOW_INDICATOR_COLOR = 'red';
 const UNAVAILABLE_HOURS_BLOCK_COLOR = '#F8F9FA';
 
@@ -21,7 +21,7 @@ export default function styleConstructor(theme: Theme = {}, calendarHeight: numb
       backgroundColor: appStyle.calendarBackground,
       ...appStyle.contentStyle,
       flexDirection: 'row',
-      height: calendarHeight + 10
+      height: calendarHeight + 10 + (appStyle.extraCalendarHeight || 0)
     },
     line: {
       height: 1,
@@ -88,6 +88,20 @@ export default function styleConstructor(theme: Theme = {}, calendarHeight: numb
       alignItems: 'flex-start',
       overflow: 'hidden',
       minHeight: 25
+    },
+    emptyEvent: {
+      opacity: 1,
+      position: 'absolute',
+      overflow: 'hidden',
+      minHeight: 24,
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingRight: 28,
+    },
+    emptyEventTitle: {
+      color: TIME_LABEL_COLOR,
+      fontWeight: '600',
+      ...appStyle.eventTitle,
     },
     eventTitle: {
       color: EVENT_TEXT_COLOR,

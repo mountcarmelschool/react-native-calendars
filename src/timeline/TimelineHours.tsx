@@ -59,8 +59,8 @@ const TimelineHours = (props: TimelineHoursProps) => {
     return range(start, end + 1).map(i => {
       let timeText;
 
-      if (i === start) {
-        timeText = '';
+      if (i === 0) {
+        timeText = !format24h ? `${12} AM` : `${i}:00`;
       } else if (i < 12) {
         timeText = !format24h ? `${i} AM` : `${i}:00`;
       } else if (i === 12) {
@@ -109,7 +109,7 @@ const TimelineHours = (props: TimelineHoursProps) => {
             styles.unavailableHoursBlock,
             block,
             unavailableHoursColor ? {backgroundColor: unavailableHoursColor} : undefined,
-            {left: timelineLeftInset}
+            {left: timelineLeftInset - 16}
           ]}
         />
       ))}
@@ -117,27 +117,25 @@ const TimelineHours = (props: TimelineHoursProps) => {
       {hours.map(({timeText, time}, index) => {
         return (
           <React.Fragment key={time}>
-            <Text key={`timeLabel${time}`} style={[styles.timeLabel, {top: offset * index - 6, width: timelineLeftInset - 16}]}>
+            <Text key={`timeLabel${time}`} style={[styles.timeLabel, {top: offset * index - 6 + 24, width: timelineLeftInset - 16}]}>
               {timeText}
             </Text>
-            {time === start ? null : (
-              <View
-                key={`line${time}`}
-                testID={`${testID}.${time}.line`}
-                style={[styles.line, {top: offset * index, width: dimensionWidth - EVENT_DIFF, left: timelineLeftInset - 16}]}
-              />
-            )}
-            {
+            <View
+              key={`line${time}`}
+              testID={`${testID}.${time}.line`}
+              style={[styles.line, {top: offset * index + 24, width: dimensionWidth - EVENT_DIFF, left: timelineLeftInset - 16}]}
+            />
+            {time === end ? null : (
               <View
                 key={`lineHalf${time}`}
                 testID={`${testID}.${time}.lineHalf`}
-                style={[styles.line, {top: offset * (index + 0.5), width: dimensionWidth - EVENT_DIFF, left: timelineLeftInset - 16}]}
+                style={[styles.line, {height: 0.6, backgroundColor: "#E9E9E9"}, {top: offset * (index + 0.5) + 24, width: dimensionWidth - EVENT_DIFF, left: timelineLeftInset - 16}]}
               />
-            }
+            )}
           </React.Fragment>
         );
       })}
-      {times(numberOfDays, (index) => <View key={index} style={[styles.verticalLine, {right: (index + 1) * width / numberOfDays}]}/>)}
+      {numberOfDays > 1 ? times(numberOfDays, (index) => <View key={index} style={[styles.verticalLine, {right: (index + 1) * width / numberOfDays}]}/>) : null}
     </>
   );
 };

@@ -1,5 +1,5 @@
 import XDate from 'xdate';
-import React, {useCallback, useMemo} from 'react';
+import React, {useCallback, useMemo, useState, useEffect} from 'react';
 import {View, Text, TextStyle, TouchableOpacity, ViewStyle} from 'react-native';
 
 export interface Event {
@@ -38,7 +38,7 @@ const EventBlock = (props: EventBlockProps) => {
   // Fixing the number of lines for the event title makes this calculation easier.
   // However it would make sense to overflow the title to a new line if needed
   const numberOfLines = Math.floor(event.height / TEXT_LINE_HEIGHT);
-  const formatTime = format24h ? 'HH:mm' : 'hh:mm A';
+  const formatTime = format24h ? 'HH:mm' : 'hh:mm TT';
   const eventStyle = useMemo(() => {
     return {
       left: event.left,
@@ -75,6 +75,35 @@ const EventBlock = (props: EventBlockProps) => {
         </View>
       )}
     </TouchableOpacity>
+  );
+};
+
+export interface EmptyEventBlockProps {
+  style: ViewStyle;
+  styles: {[key: string]: ViewStyle | TextStyle};
+}
+
+export const EmptyEventBlock = (props: EmptyEventBlockProps) => {
+  const {style, styles} = props;
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setVisible(true);
+    }, 700);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, []);
+
+  if (!visible) return null;
+  return (
+    <View style={[styles.emptyEvent, style]}>
+      <Text numberOfLines={1} style={styles.emptyEventTitle}>
+          Data not available!
+      </Text>
+    </View>
   );
 };
 

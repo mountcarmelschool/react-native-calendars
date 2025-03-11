@@ -5,6 +5,7 @@ import groupBy from 'lodash/groupBy';
 
 import React, {useCallback, useEffect, useMemo, useRef} from 'react';
 import {View, ScrollView} from 'react-native';
+import type {ScrollViewProps} from 'react-native';
 
 import constants from '../commons/constants';
 import {generateDay} from '../dateutils';
@@ -12,9 +13,10 @@ import {getCalendarDateString} from '../services';
 import {Theme} from '../types';
 import styleConstructor from './style';
 import {populateEvents, HOUR_BLOCK_HEIGHT, UnavailableHours} from './Packer';
-import {calcTimeOffset} from './helpers/presenter';
+import {calcTimeOffset, calcTimeOffsetForRange} from './helpers/presenter';
 import TimelineHours, {TimelineHoursProps} from './TimelineHours';
-import EventBlock, {Event, PackedEvent} from './EventBlock';
+import EventBlock, {EmptyEventBlock} from './EventBlock';
+import type {Event, PackedEvent} from './EventBlock';
 import NowIndicator from './NowIndicator';
 import useTimelineOffset from './useTimelineOffset';
 
@@ -115,6 +117,14 @@ export interface TimelineProps {
   timelineLeftInset?: number;
   /** Identifier for testing */
   testID?: string;
+  /**
+   * Is currently focused timeline
+   */
+  isCurrent: boolean;
+  /**
+   * The amount by which the scroll view indicators are inset from the edges of the scroll view. This should normally be set to the same value as the contentInset. Defaults to {0, 0, 0, 0}.
+   */
+  scrollIndicatorInsets?: ScrollViewProps['scrollIndicatorInsets'];
 }
 
 const Timeline = (props: TimelineProps) => {
@@ -124,6 +134,7 @@ const Timeline = (props: TimelineProps) => {
     end = 24,
     date = '',
     events,
+    isCurrent,
     onEventPress,
     onBackgroundLongPress,
     onBackgroundLongPressOut,
@@ -142,6 +153,7 @@ const Timeline = (props: TimelineProps) => {
     eventTapped,
     numberOfDays = 1,
     timelineLeftInset = 0,
+    scrollIndicatorInsets,
     testID
   } = props;
 
@@ -161,7 +173,7 @@ const Timeline = (props: TimelineProps) => {
   const {scrollEvents} = useTimelineOffset({onChangeOffset, scrollOffset, scrollViewRef: scrollView});
 
   const width = useMemo(() => {
-    return constants.screenWidth - timelineLeftInset;
+    return constants.screenWidth - (timelineLeftInset - 16);
   }, [timelineLeftInset]);
 
   const packedEvents = useMemo(() => {
@@ -175,10 +187,18 @@ const Timeline = (props: TimelineProps) => {
     });
   }, [pageEvents, start, numberOfDays]);
 
+  const nowBetweenStartAndEnd = useMemo(() => {
+    const nowDate = new Date();
+    const h = nowDate.getHours();
+    const m = nowDate.getMinutes();
+    const now = h + m / 60;
+    return (now >= start) && (now <= end);
+}, [start, end]);
+
   useEffect(() => {
     let initialPosition = 0;
-    if (scrollToNow) {
-      initialPosition = calcTimeOffset(HOUR_BLOCK_HEIGHT);
+    if (scrollToNow && nowBetweenStartAndEnd) {
+      initialPosition = calcTimeOffsetForRange(HOUR_BLOCK_HEIGHT, undefined, undefined, start, end);
     } else if (scrollToFirst && packedEvents[0].length > 0) {
       initialPosition = min(map(packedEvents[0], 'top')) ?? 0;
     } else if (initialTime) {
@@ -226,19 +246,29 @@ const Timeline = (props: TimelineProps) => {
     });
 
     return (
-      <View pointerEvents={'box-none'}  style={[{marginLeft: dayIndex === 0 ? timelineLeftInset : undefined}, styles.current.eventsContainer]}>
+      <View pointerEvents={'box-none'}  style={[{marginLeft: dayIndex === 0 ? (timelineLeftInset - 12) : undefined}, styles.current.eventsContainer]}>
         {events}
+        {events.length <= 0 && isCurrent ? (
+          <EmptyEventBlock
+            style={{
+              left: 0,
+              width,
+              top: (end-start) * HOUR_BLOCK_HEIGHT / 2,
+            }}
+            styles={styles.current}
+          />
+        ) : null}
       </View>
     );
   };
 
   const renderTimelineDay = (dayIndex: number) => {
     const indexOfToday = pageDates.indexOf(generateDay(new Date().toString()));
-    const left = timelineLeftInset + indexOfToday * width / numberOfDays;
+    const left = (timelineLeftInset - 16 - 4) + indexOfToday * width / numberOfDays;
     return (
       <React.Fragment key={dayIndex}>
         {renderEvents(dayIndex)}
-        {indexOfToday !== -1 && showNowIndicator && <NowIndicator width={width / numberOfDays} left={left} styles={styles.current}/>}
+        {indexOfToday !== -1 && showNowIndicator && nowBetweenStartAndEnd ? <NowIndicator start={start} end={end} width={(width + 4) / numberOfDays} left={left} styles={styles.current}/> : null}
       </React.Fragment>
     );
   };
@@ -249,7 +279,8 @@ const Timeline = (props: TimelineProps) => {
       ref={scrollView}
       style={styles.current.container}
       contentContainerStyle={[styles.current.contentStyle, {width: constants.screenWidth}]}
-      showsVerticalScrollIndicator={false}
+      showsVerticalScrollIndicator={true}
+      scrollIndicatorInsets={scrollIndicatorInsets}
       {...scrollEvents}
       testID={testID}
     >

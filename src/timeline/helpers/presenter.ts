@@ -28,3 +28,16 @@ export function calcTimeOffset(hourBlockHeight: number, hour?: number, minutes?:
   const m = minutes ?? now.getMinutes();
   return (h + m / 60) * hourBlockHeight;
 }
+
+export function calcTimeOffsetForRange(
+  hourBlockHeight: number,
+  hour: number | undefined,
+  minutes: number | undefined,
+  start: number,
+  end: number,
+) {
+  const now = new Date();
+  const h = hour ?? now.getHours();
+  const m = minutes ?? now.getMinutes();
+  return ((h + m / 60) * hourBlockHeight) - (start * hourBlockHeight);
+}
