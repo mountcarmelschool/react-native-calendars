@@ -37,11 +37,11 @@ function buildEvent(
   const endTime = event.end ? new XDate(event.end) : new XDate(startTime).addHours(1);
 
   const dayStartTime = new XDate(startTime).clearTime();
-
+  const calcHeight = startTime.diffHours(endTime) * hourBlockHeight;
   return {
     ...event,
     top: ((dayStartTime.diffHours(startTime) - dayStart) * hourBlockHeight) + 24,
-    height: startTime.diffHours(endTime) * hourBlockHeight,
+    height: calcHeight <= (hourBlockHeight / 2) ? undefined : calcHeight,
     width,
     left
   };
