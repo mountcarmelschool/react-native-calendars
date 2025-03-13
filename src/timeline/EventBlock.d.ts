@@ -13,7 +13,7 @@ export interface PackedEvent extends Event {
     left: number;
     top: number;
     width: number;
-    height: number;
+    height: number | undefined;
 }
 export interface EventBlockProps {
     index: number;

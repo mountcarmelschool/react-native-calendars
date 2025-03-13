@@ -7,7 +7,7 @@ const EventBlock = props => {
   const {index, event, renderEvent, onPress, format24h, styles} = props;
   // Fixing the number of lines for the event title makes this calculation easier.
   // However it would make sense to overflow the title to a new line if needed
-  const numberOfLines = Math.floor(event.height / TEXT_LINE_HEIGHT);
+  const numberOfLines = event.height ? Math.floor(event.height / TEXT_LINE_HEIGHT) : 1;
   const formatTime = format24h ? 'HH:mm' : 'hh:mm TT';
   const eventStyle = useMemo(() => {
     return {
