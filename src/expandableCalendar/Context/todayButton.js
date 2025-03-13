@@ -52,6 +52,7 @@ const TodayButton = (props, ref) => {
     if (shouldShow) {
       return state === 1 ? UP_ICON : DOWN_ICON;
     }
+    return null;
   };
   const [buttonIcon, setButtonIcon] = useState(getButtonIcon());
   /** Animations */
@@ -94,7 +95,9 @@ const TodayButton = (props, ref) => {
   return (
     <Animated.View style={[style.current.todayButtonContainer, {transform: [{translateY: buttonY.current}]}]}>
       <TouchableOpacity style={[style.current.todayButton, propsStyle]} onPress={onPress} disabled={disabled}>
-        <Animated.Image style={[style.current.todayButtonImage, {opacity: opacity.current}]} source={buttonIcon} />
+        {buttonIcon ? (
+          <Animated.Image style={[style.current.todayButtonImage, {opacity: opacity.current}]} source={buttonIcon} />
+        ) : null}
         <Animated.Text allowFontScaling={false} style={[style.current.todayButtonText, {opacity: opacity.current}]}>
           {today.current}
         </Animated.Text>
