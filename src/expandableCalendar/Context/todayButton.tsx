@@ -1,7 +1,7 @@
 import XDate from 'xdate';
 
 import React, {forwardRef, useImperativeHandle, useEffect, useRef, useState, useContext, useCallback} from 'react';
-import {Animated, TouchableOpacity, ViewStyle, ViewProps, StyleProp} from 'react-native';
+import {Animated, TouchableOpacity, ViewStyle, ViewProps, StyleProp, ImageProps} from 'react-native';
 
 import {Theme} from '../../types';
 import {getDefaultLocale} from '../../services';
@@ -83,10 +83,11 @@ const TodayButton = (props: TodayButtonProps, ref: any) => {
 
   /** Icon */
 
-  const getButtonIcon = () => {
+  const getButtonIcon = (): ImageProps['source'] | null => {
     if (shouldShow) {
       return state === 1 ? UP_ICON : DOWN_ICON;
     }
+    return null;
   };
 
   const [buttonIcon, setButtonIcon] = useState(getButtonIcon());
@@ -143,7 +144,7 @@ const TodayButton = (props: TodayButtonProps, ref: any) => {
         onPress={onPress}
         disabled={disabled}
       >
-        <Animated.Image style={[style.current.todayButtonImage, {opacity: opacity.current}]} source={buttonIcon}/>
+        {buttonIcon? <Animated.Image style={[style.current.todayButtonImage, {opacity: opacity.current}]} source={buttonIcon}/> : null}
         <Animated.Text allowFontScaling={false} style={[style.current.todayButtonText, {opacity: opacity.current}]}>
           {today.current}
         </Animated.Text>
