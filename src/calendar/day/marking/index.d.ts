@@ -2,6 +2,7 @@ import React from 'react';
 import { ViewStyle, TextStyle, StyleProp } from 'react-native';
 import { Theme, MarkingTypes } from '../../../types';
 import { DotProps } from '../dot';
+import type { Event } from '../../../timeline/EventBlock';
 export declare enum Markings {
     DOT = "dot",
     MULTI_DOT = "multi-dot",
@@ -40,6 +41,7 @@ export interface MarkingProps extends DotProps {
     customContainerStyle?: StyleProp<ViewStyle>;
     dotColor?: string;
     dots?: DOT[];
+    events?: Event[];
     periods?: PERIOD[];
     startingDay?: boolean;
     endingDay?: boolean;

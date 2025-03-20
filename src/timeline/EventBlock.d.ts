@@ -7,6 +7,7 @@ export interface Event {
     title: string;
     summary?: string;
     color?: string;
+    backgroundColor?: string;
 }
 export interface PackedEvent extends Event {
     index: number;

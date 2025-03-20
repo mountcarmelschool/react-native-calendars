@@ -177,9 +177,10 @@ const Calendar = props => {
       week.unshift(renderWeekNumber(days[days.length - 1].getWeek()));
     }
     return (
-      <View style={style.current.week} key={id}>
-        {week}
-      </View>
+      <React.Fragment key={id}>
+        <View style={style.current.weekDivider} />
+        <View style={style.current.week}>{week}</View>
+      </React.Fragment>
     );
   };
   const renderMonth = () => {

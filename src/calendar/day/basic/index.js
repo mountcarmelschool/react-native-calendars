@@ -114,11 +114,38 @@ const BasicDay = props => {
       </Text>
     );
   };
+  const renderEvents = () => {
+    if (!Array.isArray(_marking.events) || _marking.events.length <= 0) {
+      return null;
+    }
+    const fade = isDisabled || isInactive;
+    const fadeStyle = {opacity: fade ? 0.5 : 1};
+    return (
+      <View style={[style.current.events, fadeStyle]}>
+        {_marking.events?.map((event, index) => (
+          <View
+            key={event.id || index}
+            style={[style.current.eventTextContainer, {backgroundColor: event.backgroundColor || event.color}]}
+          >
+            <Text
+              allowFontScaling={false}
+              numberOfLines={1}
+              ellipsizeMode="clip"
+              style={[style.current.eventText, {color: event.backgroundColor ? event.color : undefined}]}
+            >
+              {event.summary}
+            </Text>
+          </View>
+        ))}
+      </View>
+    );
+  };
   const renderContent = () => {
     return (
       <Fragment>
         {renderText()}
         {renderMarking()}
+        {renderEvents()}
       </Fragment>
     );
   };
