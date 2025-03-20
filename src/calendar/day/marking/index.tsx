@@ -6,6 +6,7 @@ import {Theme, MarkingTypes} from '../../../types';
 import {extractDotProps} from '../../../componentUpdater';
 import styleConstructor from './style';
 import Dot, {DotProps} from '../dot';
+import type {Event} from '../../../timeline/EventBlock';
 
 export enum Markings {
   DOT = 'dot',
@@ -50,6 +51,8 @@ export interface MarkingProps extends DotProps {
   dotColor?: string;
   //multi-dot
   dots?: DOT[];
+  //multi-events
+  events?: Event[];
   //multi-period
   periods?: PERIOD[];
   startingDay?: boolean;

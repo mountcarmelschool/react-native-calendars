@@ -25,6 +25,11 @@ export default function getStyle(theme: Theme = {}) {
       flexDirection: 'row',
       justifyContent: 'space-around'
     },
+    weekDivider: {
+      height: 1,
+      width: '100%',
+      backgroundColor: '#A1ADC4',
+    },
     ...(theme['stylesheet.calendar.main'] || {})
   });
 }

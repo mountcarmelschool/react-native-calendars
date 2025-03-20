@@ -46,6 +46,20 @@ export default function styleConstructor(theme: Theme = {}) {
       color: appStyle.textInactiveColor
     },
     
+    events: {
+      gap: 2,
+      marginTop: 4,
+      marginHorizontal: 2,
+    },
+    eventTextContainer: {
+      borderRadius: 8,
+      padding: 2,
+      alignItems: 'center',
+    },
+    eventText: {
+      fontSize: 12,
+    },
+    
     ...(theme['stylesheet.day.basic'] || {})
   });
 }

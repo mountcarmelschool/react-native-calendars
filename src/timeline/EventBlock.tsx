@@ -9,6 +9,7 @@ export interface Event {
   title: string;
   summary?: string;
   color?: string;
+  backgroundColor?: string;
 }
 
 export interface PackedEvent extends Event {
@@ -45,7 +46,13 @@ const EventBlock = (props: EventBlockProps) => {
       height: event.height,
       width: event.width,
       top: event.top,
-      backgroundColor: event.color ? event.color : EVENT_DEFAULT_COLOR
+      backgroundColor: event.backgroundColor || event.color || EVENT_DEFAULT_COLOR
+    };
+  }, [event]);
+
+  const eventTextStyle = useMemo(() => {
+    return {
+      color: event.backgroundColor ? event.color : undefined,
     };
   }, [event]);
 
@@ -59,16 +66,16 @@ const EventBlock = (props: EventBlockProps) => {
         renderEvent(event)
       ) : (
         <View>
-          <Text numberOfLines={1} style={styles.eventTitle}>
+          <Text numberOfLines={1} style={[styles.eventTitle, eventTextStyle]}>
             {event.title || 'Event'}
           </Text>
           {numberOfLines > 1 ? (
-            <Text numberOfLines={numberOfLines - 1} style={[styles.eventSummary]}>
+            <Text numberOfLines={numberOfLines - 1} style={[styles.eventSummary, eventTextStyle]}>
               {event.summary || ' '}
             </Text>
           ) : null}
           {numberOfLines > 2 ? (
-            <Text style={styles.eventTimes} numberOfLines={1}>
+            <Text style={[styles.eventTimes, eventTextStyle]} numberOfLines={1}>
               {new XDate(event.start).toString(formatTime)} - {new XDate(event.end).toString(formatTime)}
             </Text>
           ) : null}

@@ -224,9 +224,12 @@ const Calendar = (props: CalendarProps & ContextProp) => {
     }
 
     return (
-      <View style={style.current.week} key={id}>
-        {week}
-      </View>
+      <React.Fragment key={id}>
+        <View style={style.current.weekDivider} />
+        <View style={style.current.week}>
+          {week}
+        </View>
+      </React.Fragment>
     );
   };
 
